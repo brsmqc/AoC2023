@@ -1,12 +1,14 @@
 INPUT = "Day 5\\input.txt"
 
+
 def get_input():
     input = ""
     with open(INPUT) as file:
         input = file.read()
     return input.split("\n")
 
-def get_seeds(input:list) -> list:
+
+def get_seeds(input: list) -> list:
     seed_line = input[0].split(" ")
     seeds = []
     for x in range(len(seed_line)):
@@ -17,8 +19,10 @@ def get_seeds(input:list) -> list:
         seeds.append({"seed_num": [seed_start, seed_start+seed_length]})
     return seeds
 
-def find_location(seed:int, soil:list, fert:list, water:list, light:list, temp:list, humid:list, loc:list) -> int:
-    soil_num = fert_num = water_num = light_num = temp_num = humid_num = location = float("-inf")
+
+def find_location(seed: int, soil: list, fert: list, water: list, light: list, temp: list, humid: list, loc: list) -> int:
+    soil_num = fert_num = water_num = light_num = temp_num = humid_num = location = float(
+        "-inf")
     for x, data in enumerate(soil[0]):
         if x % 2 != 0:
             continue
@@ -33,7 +37,7 @@ def find_location(seed:int, soil:list, fert:list, water:list, light:list, temp:l
         if data < soil_num and soil_num <= fert[0][x+1]:
             to_add = soil_num - data
             fert_num = fert[1][x] + to_add
-    if fert_num == float("-inf"): 
+    if fert_num == float("-inf"):
         fert_num = soil_num
     for x, data in enumerate(water[0]):
         if x % 2 != 0:
@@ -77,7 +81,8 @@ def find_location(seed:int, soil:list, fert:list, water:list, light:list, temp:l
         location = humid_num
     return location
 
-def create_map(input:list, dest_category:str, next_category:str = None) -> list:
+
+def create_map(input: list, dest_category: str, next_category: str = None) -> list:
     start_index = 0
     end_index = len(input)
     for index, line in enumerate(input):
@@ -100,24 +105,31 @@ def create_map(input:list, dest_category:str, next_category:str = None) -> list:
 if __name__ == "__main__":
     input_txt = get_input()
     seeds = get_seeds(input_txt)
-    
+
     # maps
-    soil_map = create_map(input_txt,"seed-to-soil map:", "soil-to-fertilizer map:")
-    fertilizer_map = create_map(input_txt,"soil-to-fertilizer map:", "fertilizer-to-water map:")
-    water_map = create_map(input_txt,"fertilizer-to-water map:", "water-to-light map:")
-    light_map = create_map(input_txt,"water-to-light map:", "light-to-temperature map:")
-    temperature_map = create_map(input_txt,"light-to-temperature map:", "temperature-to-humidity map:")
-    humidity_map = create_map(input_txt,"temperature-to-humidity map:", "humidity-to-location map:")
-    location_map = create_map(input_txt,"humidity-to-location map:")
-    
+    soil_map = create_map(input_txt, "seed-to-soil map:",
+                          "soil-to-fertilizer map:")
+    fertilizer_map = create_map(
+        input_txt, "soil-to-fertilizer map:", "fertilizer-to-water map:")
+    water_map = create_map(
+        input_txt, "fertilizer-to-water map:", "water-to-light map:")
+    light_map = create_map(input_txt, "water-to-light map:",
+                           "light-to-temperature map:")
+    temperature_map = create_map(
+        input_txt, "light-to-temperature map:", "temperature-to-humidity map:")
+    humidity_map = create_map(
+        input_txt, "temperature-to-humidity map:", "humidity-to-location map:")
+    location_map = create_map(input_txt, "humidity-to-location map:")
+
     # finding smallest loc
     smallest_loc = float("inf")
     for seed in seeds:
         start_number = seed["seed_num"][0]
         end_number = seed["seed_num"][1] + 1
         for seed_no in range(start_number, end_number):
-            loc = find_location(seed_no, soil_map,fertilizer_map, water_map, light_map, temperature_map, humidity_map, location_map)        
-            # print(loc)
+            loc = find_location(seed_no, soil_map, fertilizer_map, water_map,
+                                light_map, temperature_map, humidity_map, location_map)
+            print(loc)
             if loc < smallest_loc:
                 smallest_loc = loc
     print(smallest_loc)
