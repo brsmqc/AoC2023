@@ -132,4 +132,4 @@ if __name__ == "__main__":
             print(loc)
             if loc < smallest_loc:
                 smallest_loc = loc
-    print(smallest_loc)
+    print(f"smallest location: {smallest_loc}")
