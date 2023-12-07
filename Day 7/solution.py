@@ -1,6 +1,6 @@
 from operator import itemgetter
 
-INPUT = "Day 7\\test_input.txt"
+INPUT = "Day 7\\input.txt"
 ORDER = dict((key, idx) for idx, key in enumerate(["A", "K", "Q", "J", "T", "9", "8", "7", "6", "5", "4", "3", "2"]))
 
 
@@ -80,12 +80,16 @@ def sort_hands(hands_list:list, letter_pos:int) -> list:
         return
     temp_list = []
     for idx, hand in enumerate(hands_list):
+        # for the last value (since they're in order already)
+        if letter_pos == 4:
+            sorted_hands_list.append(hand)
         # last in list
-        if hand == hands_list[len(hands_list)-1]:
+        elif hand == hands_list[len(hands_list)-1]:
             if hand in temp_list:
-                pass
+                sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
             else:
                 sorted_hands_list.append(hand)
+
         # first iteration only
         elif hand == hands_list[0]:
             if hand[0][letter_pos] == hands_list[idx+1][0][letter_pos]:
@@ -95,11 +99,13 @@ def sort_hands(hands_list:list, letter_pos:int) -> list:
                 sorted_hands_list.append(hand)
         # every time after that
         elif hand[0][letter_pos] == hands_list[idx+1][0][letter_pos]:
-                    temp_list.append(hands_list[idx+1])
+            temp_list.append(hands_list[idx+1])
         else:
-            sorted_hands_list.append(hand)
-    if temp_list != []:
-        sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
+            # hands_list = hands_list[idx+1:]
+            if temp_list != []:
+                sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
+    # if temp_list != []:
+    #     sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
     return sorted_hands_list
 
 
@@ -119,6 +125,6 @@ if __name__ == "__main__":
     hands.sort(key= lambda hand: hand[2])
     ranked = find_rank(hands)
     winnings = caulcate_winnings(ranked)
-    print(ranked)
+    # print(ranked)
     print(winnings)
 
