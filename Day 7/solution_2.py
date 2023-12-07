@@ -1,6 +1,6 @@
 from operator import itemgetter
 
-INPUT = "Day 7\\input.txt"
+INPUT = "Day 7\\test_input.txt"
 ORDER = dict((key, idx) for idx, key in enumerate(["A", "K", "Q", "T", "9", "8", "7", "6", "5", "4", "3", "2", "J"]))
 
 
@@ -33,6 +33,8 @@ def find_type(hand: list) -> None:
         else:
             chars[char] = 1
     # print(chars)
+    if "J" in chars.keys():
+        chars = place_jokers(chars)
     types = []
     for value in chars.values():
         types.append(value)
@@ -52,7 +54,13 @@ def find_type(hand: list) -> None:
         hand.append(6)
     else:
         hand.append(7)
+
+
+def place_jokers(hand:dict) -> dict:
+    hand = dict(sorted(hand.items(), key=lambda x: [ORDER.get(x[0])]))
+    print(hand)
     
+
 
 def find_rank(hands:list) -> list:
     type_1 = [hand for hand in hands if hand[2] == 1]
@@ -127,12 +135,12 @@ if __name__ == "__main__":
     for hand in hands:
         # sort_hand(hand)
         find_type(hand)
-    hands.sort(key= lambda hand: hand[2])
-    ranked = find_rank(hands)
-    winnings = caulcate_winnings(ranked)
-    # with open("output.txt", "w") as file:
-    #     for rank in ranked:
-    #         file.write(str(rank)+"\n")
-    print(f"Hands: {len(ranked)}")
-    print(f"Winnings: {winnings}")
+    # hands.sort(key= lambda hand: hand[2])
+    # ranked = find_rank(hands)
+    # winnings = caulcate_winnings(ranked)
+    # # with open("output.txt", "w") as file:
+    # #     for rank in ranked:
+    # #         file.write(str(rank)+"\n")
+    # print(f"Hands: {len(ranked)}")
+    # print(f"Winnings: {winnings}")
 
