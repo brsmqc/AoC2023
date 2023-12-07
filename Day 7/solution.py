@@ -64,10 +64,11 @@ def find_rank(hands:list) -> list:
     type_7 = [hand for hand in hands if hand[2] == 7]
     
     # sort by first letter
+    combined_list = []
     for type in [type_1, type_2, type_3, type_4, type_5, type_6, type_7]:
         if type != []:
             type = sort_hands(type, 0)
-    combined_list = type_7 + type_6 + type_5 + type_4 + type_3 + type_2 + type_1
+        combined_list += type
     return combined_list
 
 def sort_hands(hands_list:list, letter_pos:int) -> list:
@@ -105,7 +106,7 @@ def sort_hands(hands_list:list, letter_pos:int) -> list:
 def caulcate_winnings(ranked_list:list) -> int:
     total = 0
     for rank, hand in enumerate(ranked_list):
-        total += hand[1] * (rank + 1)
+        total += hand[1] * (len(ranked_list) - rank)
     return total
 
 
