@@ -79,33 +79,38 @@ def sort_hands(hands_list:list, letter_pos:int) -> list:
     if hands_list == []:
         return
     temp_list = []
+    next_index = 0
     for idx, hand in enumerate(hands_list):
+        # get to the next index you haven't looked at yet
+        if idx < next_index:
+            continue
         # for the last value (since they're in order already)
         if letter_pos == 4:
             sorted_hands_list.append(hand)
         # last in list
         elif hand == hands_list[len(hands_list)-1]:
             if hand in temp_list:
-                sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
+                returned_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
+                sorted_hands_list += returned_hands_list
+                temp_list.clear()
             else:
                 sorted_hands_list.append(hand)
-
-        # first iteration only
-        elif hand == hands_list[0]:
-            if hand[0][letter_pos] == hands_list[idx+1][0][letter_pos]:
+        elif hand[0][letter_pos] == hands_list[idx+1][0][letter_pos]:
+            if temp_list == []:
                 temp_list.append(hand)
                 temp_list.append(hands_list[idx+1])
+                next_index = idx
             else:
-                sorted_hands_list.append(hand)
-        # every time after that
-        elif hand[0][letter_pos] == hands_list[idx+1][0][letter_pos]:
-            temp_list.append(hands_list[idx+1])
+                temp_list.append(hands_list[idx+1])
+                next_index = idx
         else:
             # hands_list = hands_list[idx+1:]
+            if temp_list == []:
+                sorted_hands_list.append(hand)
             if temp_list != []:
-                sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
-    # if temp_list != []:
-    #     sorted_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
+                returned_hands_list = [hand for hand in sort_hands(temp_list, letter_pos+1) if hand != None]
+                sorted_hands_list += returned_hands_list
+                temp_list.clear()
     return sorted_hands_list
 
 
@@ -120,11 +125,14 @@ if __name__ == "__main__":
     raw_list = get_data(INPUT)
     hands = make_hands_and_bids(raw_list)
     for hand in hands:
-        sort_hand(hand)
+        # sort_hand(hand)
         find_type(hand)
     hands.sort(key= lambda hand: hand[2])
     ranked = find_rank(hands)
     winnings = caulcate_winnings(ranked)
-    # print(ranked)
-    print(winnings)
+    # with open("output.txt", "w") as file:
+    #     for rank in ranked:
+    #         file.write(str(rank)+"\n")
+    print(f"Hands: {len(ranked)}")
+    print(f"Winnings: {winnings}")
 
