@@ -109,4 +109,30 @@ if __name__ == "__main__":
     print(map_2D)
     starting_node = find_start(map_2D)
     print(starting_node)
-    print(look_around_start(map_2D, starting_node))
+    directions = look_around_start(map_2D, starting_node)
+
+    count_1 = 0
+    count_2 = 0
+    starting_nodes = [starting_node, starting_node]
+    while True:
+        # Direction 1
+        next_node_1, next_direction_1 = follow_node(
+            map_2D, starting_nodes[0], directions[0])
+        count_1 += 1
+        # Direction 2
+        next_node_2, next_direction_2 = follow_node(
+            map_2D, starting_nodes[1], directions[1])
+        count_2 += 1
+
+        if next_node_1 == next_node_2:
+            break
+
+        # clear current lists
+        starting_nodes.clear()
+        directions.clear()
+
+        # put new data in lists for next iteration
+        starting_nodes = [next_node_1, next_node_2]
+        directions = [next_direction_1, next_direction_2]
+
+    print(f"The longest distance is {max(count_1, count_2)} steps.")
