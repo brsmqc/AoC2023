@@ -1,4 +1,4 @@
-INPUT = "Day 10\\test_input.txt"
+INPUT = "Day 10\\input.txt"
 UP = ["|", "7", "F"]
 RIGHT = ["-", "7", "J"]
 DOWN = ["|", "J", "L"]
@@ -44,7 +44,7 @@ def follow_node(node_map: list, starting_node: tuple, direction: int) -> tuple:
             next_node_char = node_map[y_pos][x_pos - 1]
             next_node = (x_pos-1, y_pos)
     next_direction = get_next_direction(next_node_char, direction)
-    return (next_node, next_direction)
+    return (next_node, (direction, next_direction))
 
 
 def get_next_direction(node_char: str, enter_direction: int) -> int:
@@ -100,25 +100,34 @@ def look_around_start(map_list: list, starting_node: tuple) -> list:
     if nodes_to_search[3] in LEFT:
         connects_to_start.append(3)
     # 0 means up, 1 means right, 2 means down, 3 means left
+    connects_to_start = [(dir, dir) for dir in connects_to_start]
     return connects_to_start
 
 
-def find_furthest_distance(map_list: list, starting_node: tuple, directions: list) -> int:
-    count_1 = 0
-    count_2 = 0
+def find_edges(map_list: list, starting_node: tuple, directions: list) -> list:
     starting_nodes = [starting_node, starting_node]
+    loop_nodes = []
+    loop_directions = []
     while True:
+        incoming_directions = [directions[0][1], directions[1][1]]
         # Direction 1
         next_node_1, next_direction_1 = follow_node(
-            map_2D, starting_nodes[0], directions[0])
-        count_1 += 1
+            map_2D, starting_nodes[0], incoming_directions[0])
         # Direction 2
         next_node_2, next_direction_2 = follow_node(
-            map_2D, starting_nodes[1], directions[1])
-        count_2 += 1
+            map_2D, starting_nodes[1], incoming_directions[1])
 
         if next_node_1 == next_node_2:
+            loop_nodes.append(next_node_1)
+            loop_directions.append(
+                (incoming_directions[0], next_direction_1[1]))
             break
+
+        # Add nodes to nodes list
+        loop_nodes.append(next_node_1)
+        loop_nodes.append(next_node_2)
+        loop_directions.append(next_direction_1)
+        loop_directions.append(next_direction_2)
 
         # clear current lists
         starting_nodes.clear()
@@ -126,7 +135,10 @@ def find_furthest_distance(map_list: list, starting_node: tuple, directions: lis
 
         # put new data in lists for next iteration
         starting_nodes = [next_node_1, next_node_2]
-        directions = [next_direction_1, next_direction_2]
+        directions = [(incoming_directions[0], next_direction_1[1]),
+                      (incoming_directions[1], next_direction_2)[1]]
+
+        incoming_directions.clear()
 
         # debug printing
         # print(f"After step {count_1}:")
@@ -134,7 +146,7 @@ def find_furthest_distance(map_list: list, starting_node: tuple, directions: lis
         # print(f"next_directions: {directions}")
         # print()
 
-    return count_1
+    return loop_nodes, loop_directions
 
 
 if __name__ == "__main__":
@@ -144,5 +156,33 @@ if __name__ == "__main__":
     starting_node = find_start(map_2D)
     # print(starting_node)
     directions = look_around_start(map_2D, starting_node)
-    steps = find_furthest_distance(map_2D, starting_node, directions)
-    print(f"The longest distance is {steps} steps.")
+    loop_nodes, loop_directions = find_edges(map_2D, starting_node, directions)
+
+    map_height = len(map_2D)
+    map_width = len(map_2D[0])
+
+    with open("Day 10\\loop_map.txt", "w", encoding="utf-8") as file:
+        for y in range(map_height):
+            line = ""
+            for x in range(map_width):
+                if (x, y) == starting_node:
+                    line += "S"
+                elif (x, y) in loop_nodes:
+                    dir = loop_directions[loop_nodes.index((x, y))]
+                    if dir == (1, 1) or dir == (3, 3):
+                        line += "─"
+                    elif dir == (1, 2) or dir == (0, 3):
+                        line += "┐"
+                    elif dir == (2, 1) or dir == (3, 0):
+                        line += "└"
+                    elif dir == (0, 1) or dir == (3, 2):
+                        line += "┌"
+                    elif dir == (1, 0) or dir == (2, 3):
+                        line += "┘"
+                    else:
+                        line += "│"
+                else:
+                    line += "."
+            file.write(line + "\n")
+
+    print("map finished.")
