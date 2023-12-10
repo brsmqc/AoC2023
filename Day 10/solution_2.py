@@ -103,14 +103,7 @@ def look_around_start(map_list: list, starting_node: tuple) -> list:
     return connects_to_start
 
 
-if __name__ == "__main__":
-    data = get_data(INPUT)
-    map_2D = make_map(data)
-    # print(map_2D)
-    starting_node = find_start(map_2D)
-    # print(starting_node)
-    directions = look_around_start(map_2D, starting_node)
-
+def find_furthest_distance(map_list: list, starting_node: tuple, directions: list) -> int:
     count_1 = 0
     count_2 = 0
     starting_nodes = [starting_node, starting_node]
@@ -141,4 +134,15 @@ if __name__ == "__main__":
         # print(f"next_directions: {directions}")
         # print()
 
-    print(f"The longest distance is {max(count_1, count_2)} steps.")
+    return count_1
+
+
+if __name__ == "__main__":
+    data = get_data(INPUT)
+    map_2D = make_map(data)
+    # print(map_2D)
+    starting_node = find_start(map_2D)
+    # print(starting_node)
+    directions = look_around_start(map_2D, starting_node)
+    steps = find_furthest_distance(map_2D, starting_node, directions)
+    print(f"The longest distance is {steps} steps.")
