@@ -33,16 +33,16 @@ def follow_node(node_map: list, starting_node: tuple, direction: int) -> tuple:
     match direction:
         case 0:
             next_node_char = node_map[y_pos - 1][x_pos]
-            next_node = (y_pos-1, x_pos)
+            next_node = (x_pos, y_pos-1)
         case 1:
             next_node_char = node_map[y_pos][x_pos + 1]
-            next_node = (y_pos, x_pos+1)
+            next_node = (x_pos+1, y_pos)
         case 2:
             next_node_char = node_map[y_pos + 1][x_pos]
-            next_node = (y_pos+1, x_pos)
+            next_node = (x_pos, y_pos+1)
         case 3:
             next_node_char = node_map[y_pos][x_pos - 1]
-            next_node = (y_pos, x_pos-1)
+            next_node = (x_pos-1, y_pos)
     next_direction = get_next_direction(next_node_char, direction)
     return (next_node, next_direction)
 
@@ -106,9 +106,9 @@ def look_around_start(map_list: list, starting_node: tuple) -> list:
 if __name__ == "__main__":
     data = get_data(INPUT)
     map_2D = make_map(data)
-    print(map_2D)
+    # print(map_2D)
     starting_node = find_start(map_2D)
-    print(starting_node)
+    # print(starting_node)
     directions = look_around_start(map_2D, starting_node)
 
     count_1 = 0
@@ -134,5 +134,11 @@ if __name__ == "__main__":
         # put new data in lists for next iteration
         starting_nodes = [next_node_1, next_node_2]
         directions = [next_direction_1, next_direction_2]
+
+        # debug printing
+        # print(f"After step {count_1}:")
+        # print(f"next_nodes: {starting_nodes}")
+        # print(f"next_directions: {directions}")
+        # print()
 
     print(f"The longest distance is {max(count_1, count_2)} steps.")
