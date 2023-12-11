@@ -1,3 +1,5 @@
+from math import dist
+
 INPUT = "Day 11\\test_input.txt"
 
 
@@ -20,21 +22,45 @@ def expand_universe(universe: list) -> list:
     return new_universe
 
 def find_galaxies(universe: list) -> list:
-    count = 1
     galaxies = []
     for idx_y, line in enumerate(universe):
         if "#" in line:
             for idx_x, char in enumerate(line):
                 if char == "#":
-                    galaxies.append([count, (idx_x, idx_y)])
-                    count += 1
+                    galaxies.append((idx_x, idx_y))
     return galaxies
 
+def find_distance(galaxy_1: tuple, galaxy_2: tuple) -> int:
+    distance_x = max(galaxy_1[0], galaxy_2[0]) - min(galaxy_1[0], galaxy_2[0])
+    distance_y = galaxy_2[1] - galaxy_1[1]
+    distance = distance_x + distance_y
+    # distance = dist(galaxy_1, galaxy_2)
+    # int_distance = round(distance)
+    return distance
+
+def calculate_distances(galaxy_list: list) -> int:
+    count = 0
+    distances = 0
+    for idx, galaxy in enumerate(galaxy_list):
+        if galaxy == galaxy_list[len(galaxy_list)-1]:
+            continue
+        for idx_2 in range(idx+1,len(galaxy_list)):
+            distance = find_distance(galaxy, galaxy_list[idx_2])
+            print(f"{idx},{idx_2} = {distance}")
+            count += 1
+            distances += distance + 1
+    print(count)
+    return distances
 
 if __name__ == "__main__":
     universe = get_data(INPUT)
     expanded_universe = expand_universe(universe)
+    for line in expanded_universe:
+        print(line)
     galaxy_list = find_galaxies(expanded_universe)
 
-    for galaxy in galaxy_list:
-        print(galaxy)
+    # for galaxy in galaxy_list:
+    #     print(galaxy)
+    
+    total_distance = calculate_distances(galaxy_list)
+    print(total_distance)
