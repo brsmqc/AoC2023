@@ -1,6 +1,6 @@
 from math import dist
 
-INPUT = "Day 11\\test_input.txt"
+INPUT = "Day 11\\input.txt"
 
 
 def get_data(data: str) -> list:
@@ -63,17 +63,17 @@ def calculate_distances(galaxy_list: list) -> int:
             continue
         for idx_2 in range(idx+1,len(galaxy_list)):
             distance = find_distance(galaxy, galaxy_list[idx_2])
-            print(f"{idx},{idx_2} = {distance}")
+            # print(f"{idx},{idx_2} = {distance}")
             count += 1
             distances += distance
-    print(count)
+    # print(count)
     return distances
 
 if __name__ == "__main__":
     universe = get_data(INPUT)
     expanded_universe = expand_universe(universe)
-    for line in expanded_universe:
-        print(line)
+    # for line in expanded_universe:
+    #     print(line)
     galaxy_list = find_galaxies(expanded_universe)
 
     # for galaxy in galaxy_list:
