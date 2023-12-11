@@ -66,26 +66,31 @@ def find_galaxies(universe: list) -> list:
                     galaxies.append((idx_x, idx_y))
     return galaxies
 
-def find_distance(galaxy_1: tuple, galaxy_2: tuple) -> int:
-    distance_x = max(galaxy_1[0], galaxy_2[0]) - min(galaxy_1[0], galaxy_2[0])
-    distance_y = galaxy_2[1] - galaxy_1[1]
+def find_distance(galaxy_1: tuple, galaxy_2: tuple, empty_rows:list, empty_columns:list, expansion_amt: int) -> int:
+    expansion_to_add_x = 0
+    expansion_to_add_y = 0
+    for num in empty_columns:
+        if max(galaxy_1[0], galaxy_2[0]) > num and num > min(galaxy_1[0], galaxy_2[0]):
+            expansion_to_add_x += 1
+    for num in empty_rows:
+        if galaxy_2[1] > num and num > galaxy_1[1]:
+            expansion_to_add_y += 1
+    distance_x = max(galaxy_1[0], galaxy_2[0]) - min(galaxy_1[0], galaxy_2[0]) + (expansion_amt * expansion_to_add_x)
+    distance_y = galaxy_2[1] - galaxy_1[1] + (expansion_amt * expansion_to_add_y)
     distance = distance_x + distance_y
     # distance = dist(galaxy_1, galaxy_2)
     # int_distance = round(distance)
     return distance
 
-def calculate_distances(galaxy_list: list) -> int:
-    count = 0
+def calculate_distances(galaxy_list: list, empty_rows: list, empty_columns: list, expansion_amt: int = 1) -> int:
     distances = 0
     for idx, galaxy in enumerate(galaxy_list):
         if galaxy == galaxy_list[len(galaxy_list)-1]:
             continue
         for idx_2 in range(idx+1,len(galaxy_list)):
-            distance = find_distance(galaxy, galaxy_list[idx_2])
+            distance = find_distance(galaxy, galaxy_list[idx_2], empty_rows, empty_columns, expansion_amt)
             # print(f"{idx},{idx_2} = {distance}")
-            count += 1
             distances += distance
-    # print(count)
     return distances
 
 if __name__ == "__main__":
@@ -95,5 +100,5 @@ if __name__ == "__main__":
     galaxy_list = find_galaxies(universe)
     print(empty_rows)
     print(empty_columns)
-    # total_distance = calculate_distances(galaxy_list)
-    # print(total_distance)
+    total_distance = calculate_distances(galaxy_list, empty_rows, empty_columns, 1000000)
+    print(total_distance)
