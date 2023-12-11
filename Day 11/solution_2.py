@@ -1,6 +1,6 @@
 from math import dist
 
-INPUT = "Day 11\\test_input.txt"
+INPUT = "Day 11\\input.txt"
 
 
 def get_data(data: str) -> list:
@@ -98,11 +98,11 @@ if __name__ == "__main__":
     empty_rows = find_empty_rows(universe)
     empty_columns = find_empty_columns(universe)
     galaxy_list = find_galaxies(universe)
-    new_universe = expand_universe(universe)
+    # new_universe = expand_universe(universe, 10)
     # with open("Day 11\\bigger universe.txt", "w") as file:
     #     for line in new_universe:
     #         file.write(line + "\n")
     # print(empty_rows)
     # print(empty_columns)
-    total_distance = calculate_distances(galaxy_list, empty_rows, empty_columns, 100)
+    total_distance = calculate_distances(galaxy_list, empty_rows, empty_columns, 1000000)
     print(total_distance)
