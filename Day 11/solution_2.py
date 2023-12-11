@@ -30,7 +30,7 @@ def find_empty_columns(universe: list) -> list:
             empty_columns.append(idx_x)
     return empty_columns
 
-def expand_universe(universe: list) -> list:
+def expand_universe(universe: list, expansion_amt: int) -> list:
     # expand columns
     columns_to_expand = []
     for idx_x in range(len(universe[0])):
@@ -44,7 +44,7 @@ def expand_universe(universe: list) -> list:
     x_expanded = []
     for line in universe:
         for column in reversed(columns_to_expand):
-            line = line[:column] + "." + line[column:]
+            line = line[:column] + "." * expansion_amt + line[column+1:]
         x_expanded.append(line)
     
     # exand rows
@@ -53,8 +53,8 @@ def expand_universe(universe: list) -> list:
         if "#" in line:
             new_universe.append(line)
         else:
-            new_universe.append(line)
-            new_universe.append(line)
+            for _ in range(expansion_amt):
+                new_universe.append(line) 
     return new_universe
 
 def find_galaxies(universe: list) -> list:
@@ -75,8 +75,8 @@ def find_distance(galaxy_1: tuple, galaxy_2: tuple, empty_rows:list, empty_colum
     for num in empty_rows:
         if galaxy_2[1] > num and num > galaxy_1[1]:
             expansion_to_add_y += 1
-    distance_x = max(galaxy_1[0], galaxy_2[0]) - min(galaxy_1[0], galaxy_2[0]) + (expansion_amt * expansion_to_add_x)
-    distance_y = galaxy_2[1] - galaxy_1[1] + (expansion_amt * expansion_to_add_y)
+    distance_x = max(galaxy_1[0], galaxy_2[0]) - min(galaxy_1[0], galaxy_2[0]) + (expansion_amt * expansion_to_add_x) - expansion_to_add_x
+    distance_y = galaxy_2[1] - galaxy_1[1] + (expansion_amt * expansion_to_add_y) - expansion_to_add_y
     distance = distance_x + distance_y
     # distance = dist(galaxy_1, galaxy_2)
     # int_distance = round(distance)
@@ -89,7 +89,7 @@ def calculate_distances(galaxy_list: list, empty_rows: list, empty_columns: list
             continue
         for idx_2 in range(idx+1,len(galaxy_list)):
             distance = find_distance(galaxy, galaxy_list[idx_2], empty_rows, empty_columns, expansion_amt)
-            # print(f"{idx},{idx_2} = {distance}")
+            # print(f"{idx+1},{idx_2+1} = {distance}")
             distances += distance
     return distances
 
@@ -98,7 +98,11 @@ if __name__ == "__main__":
     empty_rows = find_empty_rows(universe)
     empty_columns = find_empty_columns(universe)
     galaxy_list = find_galaxies(universe)
-    print(empty_rows)
-    print(empty_columns)
-    total_distance = calculate_distances(galaxy_list, empty_rows, empty_columns, 1000000)
+    new_universe = expand_universe(universe)
+    # with open("Day 11\\bigger universe.txt", "w") as file:
+    #     for line in new_universe:
+    #         file.write(line + "\n")
+    # print(empty_rows)
+    # print(empty_columns)
+    total_distance = calculate_distances(galaxy_list, empty_rows, empty_columns, 100)
     print(total_distance)
