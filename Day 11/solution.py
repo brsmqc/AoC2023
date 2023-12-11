@@ -12,8 +12,25 @@ def get_data(data: str) -> list:
 
 
 def expand_universe(universe: list) -> list:
-    new_universe = []
+    # expand columns
+    columns_to_expand = []
+    for idx_x in range(len(universe[0])):
+        is_empty = True
+        for idx_y in range(len(universe)):
+            if universe[idx_y][idx_x] == "#":
+                is_empty = False
+                break
+        if is_empty:
+            columns_to_expand.append(idx_x)
+    x_expanded = []
     for line in universe:
+        for column in reversed(columns_to_expand):
+            line = line[:column] + "." + line[column:]
+        x_expanded.append(line)
+    
+    # exand rows
+    new_universe = []
+    for line in x_expanded:
         if "#" in line:
             new_universe.append(line)
         else:
@@ -62,5 +79,5 @@ if __name__ == "__main__":
     # for galaxy in galaxy_list:
     #     print(galaxy)
     
-    total_distance = calculate_distances(galaxy_list)
-    print(total_distance)
+    # total_distance = calculate_distances(galaxy_list)
+    # print(total_distance)
