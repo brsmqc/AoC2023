@@ -65,7 +65,7 @@ def calculate_distances(galaxy_list: list) -> int:
             distance = find_distance(galaxy, galaxy_list[idx_2])
             print(f"{idx},{idx_2} = {distance}")
             count += 1
-            distances += distance + 1
+            distances += distance
     print(count)
     return distances
 
@@ -79,5 +79,5 @@ if __name__ == "__main__":
     # for galaxy in galaxy_list:
     #     print(galaxy)
     
-    # total_distance = calculate_distances(galaxy_list)
-    # print(total_distance)
+    total_distance = calculate_distances(galaxy_list)
+    print(total_distance)
