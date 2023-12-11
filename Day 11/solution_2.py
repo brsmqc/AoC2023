@@ -1,6 +1,6 @@
 from math import dist
 
-INPUT = "Day 11\\input.txt"
+INPUT = "Day 11\\test_input.txt"
 
 
 def get_data(data: str) -> list:
@@ -15,7 +15,7 @@ def find_empty_rows(univers: list) -> list:
     empty_rows = []
     for idx, line in enumerate(universe):
         if not "#" in line:
-            empty_rows.append(line)
+            empty_rows.append(idx)
     return empty_rows
 
 def find_empty_columns(universe: list) -> list:
@@ -93,9 +93,7 @@ if __name__ == "__main__":
     empty_rows = find_empty_rows(universe)
     empty_columns = find_empty_columns(universe)
     galaxy_list = find_galaxies(universe)
-
-    # for galaxy in galaxy_list:
-    #     print(galaxy)
-    
-    total_distance = calculate_distances(galaxy_list)
-    print(total_distance)
+    print(empty_rows)
+    print(empty_columns)
+    # total_distance = calculate_distances(galaxy_list)
+    # print(total_distance)
