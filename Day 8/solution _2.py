@@ -1,3 +1,5 @@
+from math import lcm
+
 INPUT = "Day 8\\input.txt"
 
 
@@ -29,12 +31,16 @@ def find_a(network: dict) -> dict:
 
 
 def follow_map(instructions: list, network: dict, starting_node: str, starting_index: int = 0) -> int:
+    steps = 0
+    if starting_index == len(instructions):
+        starting_index = 0
     next_move = instructions[starting_index]
+    next_index = starting_index + 1
     for node in network:
         if starting_node in node.keys():
             next_node = node[starting_node][next_move]
-            node_last_letter = next_node[2]
-            return next_node, node_last_letter
+            steps += 1
+            return steps, next_node, next_index
 
 
 if __name__ == "__main__":
@@ -44,25 +50,21 @@ if __name__ == "__main__":
     desert_map = format_map(data)
     a_nodes = find_a(desert_map)
 
-    total_steps = 0
-    next_index = 0
-    while True:
-        new_nodes = []
-        final_letters = set()
-        for node in a_nodes:
-            next_node, final_letter = follow_map(
-                instructions, desert_map, node, next_index)
-            new_nodes.append(next_node)
-            final_letters.add(final_letter)
-        total_steps += 1
-        print(f"step {total_steps} complete")
-        a_nodes = new_nodes
-        if len(final_letters) == 1 and "Z" in final_letters:
-            break
-        next_index += 1
-        if next_index == len(instructions):
-            next_index = 0
+    steps_list = []
+    for node in a_nodes:
+        total_steps = 0
+        step, next_node, next_index = follow_map(
+            instructions, desert_map, node)
+        total_steps += step
+        while True:
+            if next_node[2] == "Z":
+                break
+            step, next_node, next_index = follow_map(
+                instructions, desert_map, next_node, next_index)
+            total_steps += step
+        steps_list.append(total_steps)
 
-    print(f"total steps: {total_steps}")
-    # for item in desert_map:
-    #     print(item)
+    least_common = lcm(*steps_list)
+    print(least_common)
+    # for step in steps_list:
+    #     print(step)
